@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 
 # Budujemy aplikację Angular w trybie produkcyjnym
-RUN npm run build -- --prod
+RUN npm run build -- --configuration production
 
 # Etap 2: serwowanie aplikacji
 FROM nginx:alpine
