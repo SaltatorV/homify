@@ -14,12 +14,13 @@ COPY . .
 
 # Budujemy aplikację Angular w trybie produkcyjnym
 RUN npm run build -- --configuration production
+RUN ls -lh /app/dist
 
 # Etap 2: serwowanie aplikacji
 FROM nginx:alpine
 
 # Kopiujemy build z poprzedniego etapu do nginx
-COPY --from=build /app/dist/my-app /usr/share/nginx/html
+COPY --from=build /app/dist/homify /usr/share/nginx/html
 
 # Kopiujemy własny konfigurację nginx (opcjonalnie)
 # COPY nginx.conf /etc/nginx/nginx.conf
