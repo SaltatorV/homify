@@ -1,5 +1,5 @@
 # Etap 1: build aplikacji
-FROM node:20-alpine AS build
+FROM --platform=linux/arm64 nginx:alpine AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build -- --configuration production
 RUN ls -lh /app/dist
 
 # Etap 2: serwowanie aplikacji
-FROM nginx:alpine
+FROM --platform=linux/arm64 nginx:alpine 
 
 # Kopiujemy build z poprzedniego etapu do nginx
 COPY --from=build /app/dist/homify /usr/share/nginx/html
