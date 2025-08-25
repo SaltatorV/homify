@@ -28,5 +28,5 @@ COPY --from=build /app/dist/homify /usr/share/nginx/html
 # Expose port 80
 EXPOSE 80
 
-# Domyślny CMD dla nginx
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/bin/sh"]
+
