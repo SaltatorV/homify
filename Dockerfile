@@ -9,9 +9,9 @@ RUN npm ci --prefer-offline --no-audit --no-fund
 COPY . .
 
 RUN npm run build -- --configuration production
-
+RUN ls -la dist
 FROM --platform=linux/arm64 nginx:alpine 
 
-COPY --from=build /app/dist/homify /usr/share/nginx/html
+COPY --from=build /app/homify /usr/share/nginx/html
 
 EXPOSE 80
