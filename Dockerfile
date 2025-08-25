@@ -14,6 +14,4 @@ FROM --platform=linux/arm64 nginx:alpine
 
 COPY --from=build /app/dist/homify /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/nginx.conf
-
 EXPOSE 80
