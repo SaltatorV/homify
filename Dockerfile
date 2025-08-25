@@ -14,6 +14,6 @@ RUN ls -la /app/homify/browser
 
 FROM --platform=linux/arm64 nginx:alpine 
 
-COPY --from=build /app/homify/browser/ /usr/share/nginx/html
+COPY --from=build /app/homify/browser/ /usr/share/nginx/html/
 
 EXPOSE 80
