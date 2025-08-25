@@ -1,5 +1,5 @@
 # Etap 1: build aplikacji
-FROM --platform=linux/arm64 nginx:alpine AS build
+FROM --platform=linux/arm64 node:20-alpine AS build
 
 WORKDIR /app
 
