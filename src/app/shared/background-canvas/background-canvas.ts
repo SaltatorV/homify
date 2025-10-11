@@ -21,7 +21,7 @@ export class BackgroundCanvas implements OnInit {
     canvas.width = this.width;
     canvas.height = this.height;
     this.ctx = canvas.getContext('2d')!;
-    this.initPoints(130); // liczba punktów
+    this.initPoints(130);
     this.animate();
   }
 
@@ -53,13 +53,12 @@ onResize() {
   canvas.width = this.width;
   canvas.height = this.height;
 
-  // przesuwamy istniejące punkty w granice nowego canvasu
+
   this.points.forEach(p => {
     if (p.x > this.width) p.x = Math.random() * this.width;
     if (p.y > this.height) p.y = Math.random() * this.height;
   });
 
-  // obliczamy ile dodatkowych punktów trzeba wygenerować
   const extraCount = Math.floor(this.points.length * ((this.width * this.height) / (oldWidth * oldHeight)) - this.points.length);
 
   for (let i = 0; i < extraCount; i++) {
@@ -86,7 +85,6 @@ onResize() {
       this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
       this.ctx.fill();
 
-      // połącz linie
       this.points.forEach(other => {
         const dx = p.x - other.x;
         const dy = p.y - other.y;
@@ -101,7 +99,6 @@ onResize() {
         }
       });
 
-      // linie do myszy
       if (this.mouse.x !== null && this.mouse.y !== null) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
