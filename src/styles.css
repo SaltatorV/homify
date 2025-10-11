@@ -1,13 +1,16 @@
 body {
-  min-height: 100vh;
-  margin: 0;
-  background: linear-gradient(120deg, #1B262C, #0F4C75, #3282B8);
-  background-size: 400% 400%;
-  animation: gradientMove 20s ease infinite;
+  display: block;
+  height: 100vh;
+  background-color: #001845;
+  position: relative;
+  overflow: hidden;
 }
-
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+body::after {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(4,102,200,0.2) 0%, transparent 70%);
+  animation: shimmer 10s linear infinite;
 }
