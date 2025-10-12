@@ -9,19 +9,42 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
   standalone: true
 })
 export class BackgroundCanvas implements OnInit {
+  private static readonly PARTICLE_DENSITY: number = 0.00009;
+  private static readonly PARTICLES_MAX_COUNT: number = 300;
+
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
   ctx!: CanvasRenderingContext2D;
-  width = window.innerWidth;
-  height = window.innerHeight;
+
+  width: number = 0;
+  height: number = 0;
+
   points: { x: number; y: number; vx: number; vy: number; }[] = [];
   mouse = { x: null as number | null, y: null as number | null };
 
-  ngOnInit() {
+
+  private updateWindowDimensions() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+  }
+
+  private getUpdatedCanvas2DContext(): CanvasRenderingContext2D {
     const canvas = this.canvasRef.nativeElement;
     canvas.width = this.width;
     canvas.height = this.height;
-    this.ctx = canvas.getContext('2d')!;
-    this.initPoints(130);
+
+    const ctx = canvas.getContext('2d');
+    if(!ctx) {
+      throw new Error("Failed to retrieve 2D context");
+    }
+
+    return ctx;
+  }
+  
+  ngOnInit() {
+    this.updateWindowDimensions();
+    this.ctx = this.getUpdatedCanvas2DContext();
+    const pointCount = Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY);
+    this.initPoints(pointCount);
     this.animate();
   }
 
@@ -44,37 +67,23 @@ export class BackgroundCanvas implements OnInit {
 
 @HostListener('window:resize')
 onResize() {
-  const oldWidth = this.width;
-  const oldHeight = this.height;
+  clearTimeout((this as any)._resizeTimeout);
+  (this as any)._resizeTimeout = setTimeout(() => {
+    this.updateWindowDimensions();
+    this.getUpdatedCanvas2DContext();
 
-  this.width = window.innerWidth;
-  this.height = window.innerHeight;
-  const canvas = this.canvasRef.nativeElement;
-  canvas.width = this.width;
-  canvas.height = this.height;
+    const count = Math.min(Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY), BackgroundCanvas.PARTICLES_MAX_COUNT);
 
-
-  this.points.forEach(p => {
-    if (p.x > this.width) p.x = Math.random() * this.width;
-    if (p.y > this.height) p.y = Math.random() * this.height;
-  });
-
-  const extraCount = Math.floor(this.points.length * ((this.width * this.height) / (oldWidth * oldHeight)) - this.points.length);
-
-  for (let i = 0; i < extraCount; i++) {
-    this.points.push({
-      x: Math.random() * this.width,
-      y: Math.random() * this.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5
-    });
-  }
+    this.points = [];
+    this.initPoints(count);
+  }, 200);
 }
 
 
   animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.points.forEach(p => {
+
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < 0 || p.x > this.width) p.vx *= -1;
@@ -82,7 +91,7 @@ onResize() {
 
       this.ctx.fillStyle = '#0466c8';
       this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 5);
       this.ctx.fill();
 
       this.points.forEach(other => {
@@ -91,6 +100,7 @@ onResize() {
         const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 100) {
           let alpha = 1 - dist / 100;
+          this.ctx.lineWidth = 1.5;
           this.ctx.strokeStyle = `rgba(4,102,200,${alpha})`;
           this.ctx.beginPath();
           this.ctx.moveTo(p.x, p.y);
@@ -105,7 +115,8 @@ onResize() {
         const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 150) {
           let alpha = 1 - dist / 150;
-          this.ctx.strokeStyle = `rgba(0,86,196,${alpha})`;
+          this.ctx.lineWidth = 1.5;
+          this.ctx.strokeStyle = `rgba(92, 103, 125,${alpha})`;
           this.ctx.beginPath();
           this.ctx.moveTo(p.x, p.y);
           this.ctx.lineTo(this.mouse.x, this.mouse.y);
