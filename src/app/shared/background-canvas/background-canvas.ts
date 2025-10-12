@@ -1,49 +1,48 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-background-canvas',
   template: `<canvas #canvas></canvas>`,
-  styles: [`
-    canvas { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-  `],
-  standalone: true
+  styles: [
+    `
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    `,
+  ],
+  standalone: true,
 })
 export class BackgroundCanvas implements OnInit {
   private static readonly PARTICLE_DENSITY: number = 0.00009;
   private static readonly PARTICLES_MAX_COUNT: number = 300;
 
-  @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas', { static: true })
+  canvasRef!: ElementRef<HTMLCanvasElement>;
   ctx!: CanvasRenderingContext2D;
 
   width: number = 0;
   height: number = 0;
 
-  points: { x: number; y: number; vx: number; vy: number; }[] = [];
+  points: { x: number; y: number; vx: number; vy: number }[] = [];
   mouse = { x: null as number | null, y: null as number | null };
 
-
-  private updateWindowDimensions() {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-  }
-
-  private getUpdatedCanvas2DContext(): CanvasRenderingContext2D {
-    const canvas = this.canvasRef.nativeElement;
-    canvas.width = this.width;
-    canvas.height = this.height;
-
-    const ctx = canvas.getContext('2d');
-    if(!ctx) {
-      throw new Error("Failed to retrieve 2D context");
-    }
-
-    return ctx;
-  }
-  
   ngOnInit() {
     this.updateWindowDimensions();
     this.ctx = this.getUpdatedCanvas2DContext();
-    const pointCount = Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY);
+    const pointCount = Math.floor(
+      this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
+    );
     this.initPoints(pointCount);
     this.animate();
   }
@@ -54,7 +53,7 @@ export class BackgroundCanvas implements OnInit {
         x: Math.random() * this.width,
         y: Math.random() * this.height,
         vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5
+        vy: (Math.random() - 0.5) * 0.5,
       });
     }
   }
@@ -65,25 +64,28 @@ export class BackgroundCanvas implements OnInit {
     this.mouse.y = e.clientY;
   }
 
-@HostListener('window:resize')
-onResize() {
-  clearTimeout((this as any)._resizeTimeout);
-  (this as any)._resizeTimeout = setTimeout(() => {
-    this.updateWindowDimensions();
-    this.getUpdatedCanvas2DContext();
+  @HostListener('window:resize')
+  onResize() {
+    clearTimeout((this as any)._resizeTimeout);
+    (this as any)._resizeTimeout = setTimeout(() => {
+      this.updateWindowDimensions();
+      this.getUpdatedCanvas2DContext();
 
-    const count = Math.min(Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY), BackgroundCanvas.PARTICLES_MAX_COUNT);
+      const count = Math.min(
+        Math.floor(
+          this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
+        ),
+        BackgroundCanvas.PARTICLES_MAX_COUNT
+      );
 
-    this.points = [];
-    this.initPoints(count);
-  }, 200);
-}
-
+      this.points = [];
+      this.initPoints(count);
+    }, 200);
+  }
 
   animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.points.forEach(p => {
-
+    this.points.forEach((p) => {
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < 0 || p.x > this.width) p.vx *= -1;
@@ -94,10 +96,10 @@ onResize() {
       this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 5);
       this.ctx.fill();
 
-      this.points.forEach(other => {
+      this.points.forEach((other) => {
         const dx = p.x - other.x;
         const dy = p.y - other.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 100) {
           let alpha = 1 - dist / 100;
           this.ctx.lineWidth = 1.5;
@@ -112,7 +114,7 @@ onResize() {
       if (this.mouse.x !== null && this.mouse.y !== null) {
         const dx = p.x - this.mouse.x;
         const dy = p.y - this.mouse.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) {
           let alpha = 1 - dist / 150;
           this.ctx.lineWidth = 1.5;
@@ -126,5 +128,23 @@ onResize() {
     });
 
     requestAnimationFrame(() => this.animate());
+  }
+
+  private updateWindowDimensions() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+  }
+
+  private getUpdatedCanvas2DContext(): CanvasRenderingContext2D {
+    const canvas = this.canvasRef.nativeElement;
+    canvas.width = this.width;
+    canvas.height = this.height;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Failed to retrieve 2D context');
+    }
+
+    return ctx;
   }
 }
