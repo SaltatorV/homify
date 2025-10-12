@@ -8,20 +8,7 @@ import {
 
 @Component({
   selector: 'app-background-canvas',
-  template: `<canvas #canvas></canvas>`,
-  styles: [
-    `
-      canvas {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    `,
-  ],
-  standalone: true,
+  template: `<canvas #canvas></canvas>`
 })
 export class BackgroundCanvas implements OnInit {
   private static readonly PARTICLE_DENSITY: number = 0.00009;
