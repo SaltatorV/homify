@@ -8,7 +8,7 @@ import {
 
 @Component({
   selector: 'app-background-canvas',
-  template: `<canvas #canvas></canvas>`
+  template: `<canvas #canvas></canvas>`,
 })
 export class BackgroundCanvas implements OnInit {
   private static readonly PARTICLE_DENSITY: number = 0.00009;
@@ -27,10 +27,7 @@ export class BackgroundCanvas implements OnInit {
   ngOnInit() {
     this.updateWindowDimensions();
     this.ctx = this.getUpdatedCanvas2DContext();
-    const pointCount = Math.floor(
-      this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
-    );
-    this.initPoints(pointCount);
+    this.initPoints(this.calculatePointCount());
     this.animate();
   }
 
@@ -133,5 +130,11 @@ export class BackgroundCanvas implements OnInit {
     }
 
     return ctx;
+  }
+
+  private calculatePointCount(): number {
+    return Math.floor(
+      this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
+    );
   }
 }
