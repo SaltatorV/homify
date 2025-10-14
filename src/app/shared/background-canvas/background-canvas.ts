@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { Particles } from '../particles';
 
 @Component({
   selector: 'app-background-canvas',
@@ -17,30 +18,20 @@ export class BackgroundCanvas implements OnInit {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
   ctx!: CanvasRenderingContext2D;
+  particles!: Particles
 
   width: number = 0;
   height: number = 0;
 
-  points: { x: number; y: number; vx: number; vy: number }[] = [];
   mouse = { x: null as number | null, y: null as number | null };
 
   ngOnInit() {
     this.updateWindowDimensions();
     this.ctx = this.getUpdatedCanvas2DContext();
-    this.initPoints(this.calculatePointCount());
+    this.particles = new Particles(this.width, this.height, this.calculatePointCount());
     this.animate();
   }
 
-  initPoints(count: number) {
-    for (let i = 0; i < count; i++) {
-      this.points.push({
-        x: Math.random() * this.width,
-        y: Math.random() * this.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-      });
-    }
-  }
 
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
@@ -55,21 +46,13 @@ export class BackgroundCanvas implements OnInit {
       this.updateWindowDimensions();
       this.getUpdatedCanvas2DContext();
 
-      const count = Math.min(
-        Math.floor(
-          this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
-        ),
-        BackgroundCanvas.PARTICLES_MAX_COUNT
-      );
-
-      this.points = [];
-      this.initPoints(count);
+      this.particles = new Particles(this.width, this.height, this.calculatePointCount());
     }, 200);
   }
 
   animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.points.forEach((p) => {
+    this.particles.getParticlePoints.forEach((p) => {
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < 0 || p.x > this.width) p.vx *= -1;
@@ -80,7 +63,7 @@ export class BackgroundCanvas implements OnInit {
       this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 5);
       this.ctx.fill();
 
-      this.points.forEach((other) => {
+      this.particles.getParticlePoints.forEach((other) => {
         const dx = p.x - other.x;
         const dy = p.y - other.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -133,8 +116,9 @@ export class BackgroundCanvas implements OnInit {
   }
 
   private calculatePointCount(): number {
-    return Math.floor(
-      this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY
+    return Math.min(
+      Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY),
+      BackgroundCanvas.PARTICLES_MAX_COUNT
     );
   }
 }
