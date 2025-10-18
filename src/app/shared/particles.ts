@@ -1,26 +1,25 @@
-import { Point } from "./point";
+import { ParticlePoint } from "./particle-point";
 
 export class Particles {
-    points: Point[] = [];
+    points: ParticlePoint[] = [];
 
     constructor(width: number, height: number, particlesCount: number) {
         this.points = this.generateParticlePoints(width, height, particlesCount);
     }
 
-    get getParticlePoints(): Point[]{
+    get getParticlePoints(): ParticlePoint[]{
         return this.points;
     }
 
-    private generateParticlePoints(width: number, height: number, particlesCount: number): Point[] {
-        const points: Point[] = []
+    private generateParticlePoints(width: number, height: number, particlesCount: number): ParticlePoint[] {
+        const points: ParticlePoint[] = []
         for (let i = 0; i < particlesCount; i++) {
 
-        points.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-        });
+        points.push(new ParticlePoint(
+            Math.random() * width, 
+            Math.random() * height, 
+            (Math.random() - 0.5) * 0.5, 
+            (Math.random() - 0.5) * 0.5));
         }
 
         return points;
