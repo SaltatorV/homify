@@ -1,9 +1,9 @@
 export class ParticlePoint {
 
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
+    private x: number;
+    private y: number;
+    private vx: number;
+    private vy: number;
 
     constructor(x: number, y: number, vx: number, vy: number) {
         this.x = x;
@@ -24,5 +24,13 @@ export class ParticlePoint {
         const dx = this.x - other.x;
         const dy = this.y - other.y;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    get positionX() {
+        return this.x;
+    }
+
+    get positionY() {
+        return this.y;
     }
 }

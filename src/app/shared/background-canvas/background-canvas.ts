@@ -57,7 +57,7 @@ export class BackgroundCanvas implements OnInit {
 
       this.ctx.fillStyle = '#0466c8';
       this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 5);
+      this.ctx.arc(p.positionX, p.positionY, 2, 0, Math.PI * 5);
       this.ctx.fill();
 
       this.particles.getParticlePoints.forEach((other) => {
@@ -68,22 +68,22 @@ export class BackgroundCanvas implements OnInit {
           this.ctx.lineWidth = 1.5;
           this.ctx.strokeStyle = `rgba(4,102,200,${alpha})`;
           this.ctx.beginPath();
-          this.ctx.moveTo(p.x, p.y);
-          this.ctx.lineTo(other.x, other.y);
+          this.ctx.moveTo(p.positionX, p.positionY);
+          this.ctx.lineTo(other.positionX, other.positionY);
           this.ctx.stroke();
         }
       });
 
       if (this.mouse.x !== null && this.mouse.y !== null) {
-        const dx = p.x - this.mouse.x;
-        const dy = p.y - this.mouse.y;
+        const dx = p.positionX - this.mouse.x;
+        const dy = p.positionY - this.mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) {
           let alpha = 1 - dist / 150;
           this.ctx.lineWidth = 1.5;
           this.ctx.strokeStyle = `rgba(92, 103, 125,${alpha})`;
           this.ctx.beginPath();
-          this.ctx.moveTo(p.x, p.y);
+          this.ctx.moveTo(p.positionX, p.positionY);
           this.ctx.lineTo(this.mouse.x, this.mouse.y);
           this.ctx.stroke();
         }
