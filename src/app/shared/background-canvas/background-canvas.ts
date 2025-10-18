@@ -53,9 +53,7 @@ export class BackgroundCanvas implements OnInit {
   animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.particles.getParticlePoints.forEach((p) => {
-      p.move();
-      if (p.x < 0 || p.x > this.width) p.vx *= -1;
-      if (p.y < 0 || p.y > this.height) p.vy *= -1;
+      p.move(this.width, this.height);
 
       this.ctx.fillStyle = '#0466c8';
       this.ctx.beginPath();
