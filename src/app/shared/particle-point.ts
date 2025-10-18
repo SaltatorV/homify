@@ -1,4 +1,5 @@
 export class ParticlePoint {
+
     x: number;
     y: number;
     vx: number;
@@ -17,5 +18,11 @@ export class ParticlePoint {
 
         if (this.x < 0 || this.x > width) this.vx *= -1;
         if (this.y < 0 || this.y > height) this.vy *= -1;
+    }
+
+    calculateDistance(other: ParticlePoint) {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }

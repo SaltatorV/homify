@@ -61,9 +61,8 @@ export class BackgroundCanvas implements OnInit {
       this.ctx.fill();
 
       this.particles.getParticlePoints.forEach((other) => {
-        const dx = p.x - other.x;
-        const dy = p.y - other.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const dist = p.calculateDistance(other);
         if (dist < 100) {
           let alpha = 1 - dist / 100;
           this.ctx.lineWidth = 1.5;
