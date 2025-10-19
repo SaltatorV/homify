@@ -25,7 +25,7 @@ export class BackgroundCanvas implements OnInit {
   particlePointConfiguration: ParticlePointConfiguration
 
   constructor(particleConfigService: ParticleConfigService) {
-    this.particlePointConfiguration = particleConfigService.getStyle(ParticleConfigurationName.BackgroundCanvas)
+    this.particlePointConfiguration = particleConfigService.getParticlePointConfiguration(ParticleConfigurationName.BackgroundCanvas)
   }
 
   ngOnInit() {
