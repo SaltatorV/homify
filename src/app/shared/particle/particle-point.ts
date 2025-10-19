@@ -14,7 +14,7 @@ export class ParticlePoint {
     this.vy = vy;
   }
 
-  move(width: number, height: number) {
+  moveTo(width: number, height: number) {
     this.x += this.vx;
     this.y += this.vy;
 

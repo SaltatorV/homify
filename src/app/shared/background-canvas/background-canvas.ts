@@ -55,36 +55,33 @@ export class BackgroundCanvas implements OnInit {
 
   animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.particles.getParticlePoints.forEach((p) => {
-      p.move(this.width, this.height);
-
-
-      p.draw(this.ctx, this.particlePointConfiguration)
+    this.particles.getParticlePoints.forEach((point) => {
+      point.moveTo(this.width, this.height);
+      point.draw(this.ctx, this.particlePointConfiguration)
 
       this.particles.getParticlePoints.forEach((other) => {
-
-        const dist = p.calculateDistance(other);
+        const dist = point.calculateDistance(other);
         if (dist < 100) {
           let alpha = 1 - dist / 100;
           this.ctx.lineWidth = 1.5;
           this.ctx.strokeStyle = `rgba(4,102,200,${alpha})`;
           this.ctx.beginPath();
-          this.ctx.moveTo(p.positionX, p.positionY);
+          this.ctx.moveTo(point.positionX, point.positionY);
           this.ctx.lineTo(other.positionX, other.positionY);
           this.ctx.stroke();
         }
       });
 
       if (this.mouse.x !== null && this.mouse.y !== null) {
-        const dx = p.positionX - this.mouse.x;
-        const dy = p.positionY - this.mouse.y;
+        const dx = point.positionX - this.mouse.x;
+        const dy = point.positionY - this.mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) {
           let alpha = 1 - dist / 150;
           this.ctx.lineWidth = 1.5;
           this.ctx.strokeStyle = `rgba(92, 103, 125,${alpha})`;
           this.ctx.beginPath();
-          this.ctx.moveTo(p.positionX, p.positionY);
+          this.ctx.moveTo(point.positionX, point.positionY);
           this.ctx.lineTo(this.mouse.x, this.mouse.y);
           this.ctx.stroke();
         }
