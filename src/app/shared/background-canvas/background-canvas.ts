@@ -1,21 +1,19 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { Particles } from '../particle/particles';
+import {Component, ElementRef, HostListener, OnInit, ViewChild,} from '@angular/core';
+import {Particles} from '../particle/particles';
+import {ParticleConfigService} from '../particle-config-service';
+import {ParticlePointConfiguration} from '../particle/particle-point-configuration';
+import {ParticleConfigurationName} from '../../config/particle.config';
 
 @Component({
   selector: 'app-background-canvas',
-  template: `<canvas #canvas></canvas>`,
+  template: `
+    <canvas #canvas></canvas>`,
 })
 export class BackgroundCanvas implements OnInit {
   private static readonly PARTICLE_DENSITY: number = 0.00009;
   private static readonly PARTICLES_MAX_COUNT: number = 300;
 
-  @ViewChild('canvas', { static: true })
+  @ViewChild('canvas', {static: true})
   canvasRef!: ElementRef<HTMLCanvasElement>;
   ctx!: CanvasRenderingContext2D;
   particles!: Particles
@@ -23,7 +21,12 @@ export class BackgroundCanvas implements OnInit {
   width: number = 0;
   height: number = 0;
 
-  mouse = { x: null as number | null, y: null as number | null };
+  mouse = {x: null as number | null, y: null as number | null};
+  particlePointConfiguration: ParticlePointConfiguration
+
+  constructor(particleConfigService: ParticleConfigService) {
+    this.particlePointConfiguration = particleConfigService.getStyle(ParticleConfigurationName.BackgroundCanvas)
+  }
 
   ngOnInit() {
     this.updateWindowDimensions();
@@ -55,10 +58,8 @@ export class BackgroundCanvas implements OnInit {
     this.particles.getParticlePoints.forEach((p) => {
       p.move(this.width, this.height);
 
-      this.ctx.fillStyle = '#0466c8';
-      this.ctx.beginPath();
-      this.ctx.arc(p.positionX, p.positionY, 2, 0, Math.PI * 5);
-      this.ctx.fill();
+
+      p.draw(this.ctx, this.particlePointConfiguration)
 
       this.particles.getParticlePoints.forEach((other) => {
 
