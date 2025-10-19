@@ -50,7 +50,6 @@ export class BackgroundCanvas implements OnInit {
     (this as any)._resizeTimeout = setTimeout(() => {
       this.updateWindowDimensions();
       this.getUpdatedCanvas2DContext();
-
       this.particles = new Particles(this.screenDimensions, this.calculatePointCount());
     }, 200);
   }
