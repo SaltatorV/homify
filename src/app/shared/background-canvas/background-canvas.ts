@@ -3,6 +3,7 @@ import {Particles} from '../particle/particles';
 import {ParticleConfigService} from '../particle-config-service';
 import {ParticlePointConfiguration} from '../particle/particle-point-configuration';
 import {ParticleConfigurationName} from '../../config/particle.config';
+import {ParticleLineConfiguration} from '../particle/particle-line-configuration';
 
 @Component({
   selector: 'app-background-canvas',
@@ -23,9 +24,11 @@ export class BackgroundCanvas implements OnInit {
 
   mouse = {x: null as number | null, y: null as number | null};
   particlePointConfiguration: ParticlePointConfiguration
+  particleLineConfiguration: ParticleLineConfiguration
 
   constructor(particleConfigService: ParticleConfigService) {
     this.particlePointConfiguration = particleConfigService.getParticlePointConfiguration(ParticleConfigurationName.BackgroundCanvas)
+    this.particleLineConfiguration = particleConfigService.getParticleLineConfiguration(ParticleConfigurationName.BackgroundCanvas)
   }
 
   ngOnInit() {
@@ -61,14 +64,8 @@ export class BackgroundCanvas implements OnInit {
 
       this.particles.getParticlePoints.forEach((other) => {
         const dist = point.calculateDistance(other);
-        if (dist < 100) {
-          let alpha = 1 - dist / 100;
-          this.ctx.lineWidth = 1.5;
-          this.ctx.strokeStyle = `rgba(4,102,200,${alpha})`;
-          this.ctx.beginPath();
-          this.ctx.moveTo(point.positionX, point.positionY);
-          this.ctx.lineTo(other.positionX, other.positionY);
-          this.ctx.stroke();
+        if (dist < this.particleLineConfiguration.maxLineLength) {
+          point.strokeWith(other, this.ctx, this.particleLineConfiguration)
         }
       });
 

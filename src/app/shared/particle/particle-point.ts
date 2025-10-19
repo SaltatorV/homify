@@ -1,4 +1,5 @@
 import {ParticlePointConfiguration} from './particle-point-configuration';
+import {ParticleLineConfiguration} from './particle-line-configuration';
 
 export class ParticlePoint {
 
@@ -41,5 +42,14 @@ export class ParticlePoint {
     ctx.beginPath();
     ctx.arc(this.x, this.y, particlePointConfiguration.radius, 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  strokeWith(other: ParticlePoint, ctx: CanvasRenderingContext2D, particleLineConfiguration: ParticleLineConfiguration) {
+    ctx.lineWidth = particleLineConfiguration.lineWidth;
+    ctx.strokeStyle = particleLineConfiguration.strokeStyle;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(other.positionX, other.positionY);
+    ctx.stroke();
   }
 }
