@@ -44,9 +44,9 @@ export class ParticlePoint {
     ctx.fill();
   }
 
-  strokeWith(other: ParticlePoint, ctx: CanvasRenderingContext2D, particleLineConfiguration: ParticleLineConfiguration) {
-    ctx.lineWidth = particleLineConfiguration.lineWidth;
-    ctx.strokeStyle = particleLineConfiguration.strokeStyle;
+  strokeWith(other: ParticlePoint, ctx: CanvasRenderingContext2D, configuration: ParticleLineConfiguration, alpha: number) {
+    ctx.lineWidth = configuration.lineWidth;
+    ctx.strokeStyle = `rgba(${configuration.color.redSaturation},${configuration.color.greenSaturation},${configuration.color.blueSaturation},${alpha})`;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(other.positionX, other.positionY);

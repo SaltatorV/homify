@@ -12,10 +12,14 @@ export const PARTICLE_POINT_CONFIG: Record<ParticleConfigurationName, ParticlePo
 }
 
 export const PARTICLE_LINE_CONFIG: Record<ParticleConfigurationName, ParticleLineConfiguration> = {
-  [ParticleConfigurationName.Default]: {lineWidth: 1, strokeStyle: `rgba(4, 102, 200, 0.2)`, maxLineLength: 50},
+  [ParticleConfigurationName.Default]: {
+    lineWidth: 1,
+    color: {redSaturation: 4, greenSaturation: 102, blueSaturation: 200},
+    maxLineLength: 50
+  },
   [ParticleConfigurationName.BackgroundCanvas]: {
     lineWidth: 2,
-    strokeStyle: `rgba(4, 102, 200, 0.3)`,
+    color: {redSaturation: 4, greenSaturation: 102, blueSaturation: 200},
     maxLineLength: 100
   }
 }

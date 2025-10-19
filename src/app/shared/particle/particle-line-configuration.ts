@@ -1,5 +1,7 @@
+import {ColorSaturation} from './color-saturation';
+
 export interface ParticleLineConfiguration {
   lineWidth: number;
-  strokeStyle: string;
+  color: ColorSaturation;
   maxLineLength: number;
 }

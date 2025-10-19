@@ -65,7 +65,8 @@ export class BackgroundCanvas implements OnInit {
       this.particles.getParticlePoints.forEach((other) => {
         const dist = point.calculateDistance(other);
         if (dist < this.particleLineConfiguration.maxLineLength) {
-          point.strokeWith(other, this.ctx, this.particleLineConfiguration)
+          let alpha = 1 - dist / this.particleLineConfiguration.maxLineLength;
+          point.strokeWith(other, this.ctx, this.particleLineConfiguration, alpha)
         }
       });
 
