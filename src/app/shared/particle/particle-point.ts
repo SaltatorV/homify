@@ -29,14 +29,6 @@ export class ParticlePoint {
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  get positionX() {
-    return this.x;
-  }
-
-  get positionY() {
-    return this.y;
-  }
-
   draw(ctx: CanvasRenderingContext2D, particlePointConfiguration: ParticlePointConfiguration) {
     ctx.fillStyle = particlePointConfiguration.fillColor;
     ctx.beginPath();
@@ -51,5 +43,13 @@ export class ParticlePoint {
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(other.positionX, other.positionY);
     ctx.stroke();
+  }
+
+  get positionX() {
+    return this.x;
+  }
+
+  get positionY() {
+    return this.y;
   }
 }
