@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Particles } from '../particles';
+import { Particles } from '../particle/particles';
 
 @Component({
   selector: 'app-background-canvas',
