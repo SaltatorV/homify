@@ -4,6 +4,7 @@ import {ParticleConfigService} from '../particle-config-service';
 import {ParticlePointConfiguration} from '../particle/particle-point-configuration';
 import {ParticleConfigurationName} from '../../config/particle.config';
 import {ParticleLineConfiguration} from '../particle/particle-line-configuration';
+import {ParticlePoint} from '../particle/particle-point';
 
 @Component({
   selector: 'app-background-canvas',
@@ -18,6 +19,7 @@ export class BackgroundCanvas implements OnInit {
   canvasRef!: ElementRef<HTMLCanvasElement>;
   ctx!: CanvasRenderingContext2D;
   particles!: Particles
+  mousePoint!: ParticlePoint
 
   width: number = 0;
   height: number = 0;
@@ -41,8 +43,7 @@ export class BackgroundCanvas implements OnInit {
 
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(e: MouseEvent) {
-    this.mouse.x = e.clientX;
-    this.mouse.y = e.clientY;
+    this.mousePoint = new ParticlePoint(e.clientX, e.clientY, 0, 0);
   }
 
   @HostListener('window:resize')
@@ -70,18 +71,11 @@ export class BackgroundCanvas implements OnInit {
         }
       });
 
-      if (this.mouse.x !== null && this.mouse.y !== null) {
-        const dx = point.positionX - this.mouse.x;
-        const dy = point.positionY - this.mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-          let alpha = 1 - dist / 150;
-          this.ctx.lineWidth = 1.5;
-          this.ctx.strokeStyle = `rgba(92, 103, 125,${alpha})`;
-          this.ctx.beginPath();
-          this.ctx.moveTo(point.positionX, point.positionY);
-          this.ctx.lineTo(this.mouse.x, this.mouse.y);
-          this.ctx.stroke();
+      if (this.mousePoint!=null) {
+        const dist = point.calculateDistance(this.mousePoint)
+        if (dist < this.particleLineConfiguration.maxLineLength) {
+          let alpha = 1 - dist / this.particleLineConfiguration.maxLineLength;
+          point.strokeWith(this.mousePoint, this.ctx, this.particleLineConfiguration, alpha)
         }
       }
     });
