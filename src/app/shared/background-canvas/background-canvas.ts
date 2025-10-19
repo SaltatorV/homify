@@ -5,6 +5,7 @@ import {ParticlePointConfiguration} from '../particle/particle-point-configurati
 import {ParticleConfigurationName} from '../../config/particle.config';
 import {ParticleLineConfiguration} from '../particle/particle-line-configuration';
 import {ParticlePoint} from '../particle/particle-point';
+import {ScreenDimensions} from '../particle/screen-dimensions';
 
 @Component({
   selector: 'app-background-canvas',
@@ -20,11 +21,8 @@ export class BackgroundCanvas implements OnInit {
   ctx!: CanvasRenderingContext2D;
   particles!: Particles
   mousePoint!: ParticlePoint
+  screenDimensions!: ScreenDimensions;
 
-  width: number = 0;
-  height: number = 0;
-
-  mouse = {x: null as number | null, y: null as number | null};
   particlePointConfiguration: ParticlePointConfiguration
   particleLineConfiguration: ParticleLineConfiguration
 
@@ -36,7 +34,7 @@ export class BackgroundCanvas implements OnInit {
   ngOnInit() {
     this.updateWindowDimensions();
     this.ctx = this.getUpdatedCanvas2DContext();
-    this.particles = new Particles(this.width, this.height, this.calculatePointCount());
+    this.particles = new Particles(this.screenDimensions, this.calculatePointCount());
     this.animate();
   }
 
@@ -53,14 +51,14 @@ export class BackgroundCanvas implements OnInit {
       this.updateWindowDimensions();
       this.getUpdatedCanvas2DContext();
 
-      this.particles = new Particles(this.width, this.height, this.calculatePointCount());
+      this.particles = new Particles(this.screenDimensions, this.calculatePointCount());
     }, 200);
   }
 
   animate() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.clearRect(0, 0, this.screenDimensions.getWidth, this.screenDimensions.getHeight);
     this.particles.getParticlePoints.forEach((point) => {
-      point.moveTo(this.width, this.height);
+      point.moveTo(this.screenDimensions.getWidth, this.screenDimensions.getHeight);
       point.draw(this.ctx, this.particlePointConfiguration)
 
       this.particles.getParticlePoints.forEach((other) => {
@@ -71,7 +69,7 @@ export class BackgroundCanvas implements OnInit {
         }
       });
 
-      if (this.mousePoint!=null) {
+      if (this.mousePoint != null) {
         const dist = point.calculateDistance(this.mousePoint)
         if (dist < this.particleLineConfiguration.maxLineLength) {
           let alpha = 1 - dist / this.particleLineConfiguration.maxLineLength;
@@ -84,14 +82,13 @@ export class BackgroundCanvas implements OnInit {
   }
 
   private updateWindowDimensions() {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.screenDimensions = new ScreenDimensions(window.innerWidth, window.innerHeight);
   }
 
   private getUpdatedCanvas2DContext(): CanvasRenderingContext2D {
     const canvas = this.canvasRef.nativeElement;
-    canvas.width = this.width;
-    canvas.height = this.height;
+    canvas.width = this.screenDimensions.getWidth;
+    canvas.height = this.screenDimensions.getHeight;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) {
@@ -103,7 +100,7 @@ export class BackgroundCanvas implements OnInit {
 
   private calculatePointCount(): number {
     return Math.min(
-      Math.floor(this.width * this.height * BackgroundCanvas.PARTICLE_DENSITY),
+      Math.floor(this.screenDimensions.getWidth * this.screenDimensions.getHeight * BackgroundCanvas.PARTICLE_DENSITY),
       BackgroundCanvas.PARTICLES_MAX_COUNT
     );
   }
