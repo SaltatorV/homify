@@ -1,6 +1,9 @@
 import {ParticlePointStyle} from '../shared/particle/particle-point-style';
 
-type ParticleConfigurationName = 'default' | 'background-canvas'
+export enum ParticleConfigurationName {
+  default = 'default',
+  backgroundCanvas = 'background-canvas'
+}
 
 export const ParticleConfig: Record<ParticleConfigurationName, ParticlePointStyle> = {
   'default': {fillColor: '#0466c8', radius: 1},
